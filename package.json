@@ -1,6 +1,6 @@
 {
   "name": "weedux",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A toy redux like thing",
   "main": "dist/index.js",
   "jsnext:main": "src/index.js",
@@ -16,17 +16,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/adamveld12/wee-dux.git"
+    "url": "https://github.com/adamveld12/weedux.git"
   },
   "keywords": [
     "react",
     "flux"
   ],
-  "homepage": "https://github.com/adamveld12/wee-dux#readme",
+  "homepage": "https://github.com/adamveld12/weedux#readme",
   "author": "Adam Veldhousen",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/adamveld12/wee-dux/issues"
+    "url": "https://github.com/adamveld12/weedux/issues"
   },
   "babel": {
     "presets": [
