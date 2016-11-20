@@ -1,8 +1,8 @@
 import Weedux from '../index.js';
-import { async, logger } from  './index.js';
+import { thunk, logger } from  './index.js';
 
-test('async middleware applies when not passed as array', () => {
-  const store = new Weedux({}, (s) => s, async);
+test('thunk middleware applies when not passed as array', () => {
+  const store = new Weedux({}, (s) => s, thunk);
   const dispatch = store.dispatcher();
   const testFn = jest.fn();
 
@@ -23,8 +23,8 @@ test('async middleware applies when not passed as array', () => {
   }).then(() => expect(testFn).toHaveBeenCalledTimes(2));
 });
 
-test('async middleware applies when passed as array', () => {
-  const store = new Weedux({}, (s) => s, [async]);
+test('thunk middleware applies when passed as array', () => {
+  const store = new Weedux({}, (s) => s, [thunk]);
   const dispatch = store.dispatcher();
   const testFn = jest.fn();
 

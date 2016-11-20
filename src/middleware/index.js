@@ -1,23 +1,30 @@
-module.exports = {
-  async: createAsyncMiddleware,
-  logger: createLoggerMiddleware,
+const createThunk = store => n => a =>
+  (typeof(a) === "function") ? a(store.dispatcher(), store.getState()) : n(a)
+
+const createLogger = (store) => n => a => {
+  console.log("Dispatching ", a);
+  n(a);
 }
 
-function createAsyncMiddleware(store){
-  return n => a => {
-    if (typeof(a) === "function"){
-      const { dispatcher } = store;
-      a(dispatcher());
-      return;
-    }
-
+const createSafeDispatcher = (store, onError) => (n) => {
+  try{
     n(a);
+  } catch(e){
+    onError ? onError(e) :  console.error(e);
   }
 }
 
-function createLoggerMiddleware(store) {
-    return n => a => {
-      console.log("Dispatching ", a);
-      n(a);
-    }
+const createPromiseDispatcher = (store) => (n) => (a) => {
+  if (typeof(a.then) === "function"){
+    return Promise.resolve(a).then(store.dispatcher());
+  }
+
+  return n(a);
+}
+
+module.exports = {
+  thunk: createThunk,
+  logger: createLogger,
+  safe: createSafeDispatcher,
+  promise: createPromiseDispatcher,
 }

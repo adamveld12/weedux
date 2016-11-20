@@ -13,6 +13,7 @@ $ npm install weedux --save
 Use it like this:
 ```javascript
 import weedux from 'weedux';
+import { thunk } from 'weedux/middleware';
 
 const initialState = { counter: 0 };
 
@@ -35,7 +36,7 @@ const reducers = [
   },
 ];
 
-const store = new weedux(initialState, reducers);
+const store = new weedux(initialState, reducers, [thunk]);
 
 store.onDispatchComplete((newState) => console.log("State Updated:", newState));
 
@@ -43,7 +44,7 @@ const dispatch = store.dispatcher();
 
 dispatch({type: "INCREMENT_COUNTER"});
 
-// do async stuff
+// do async stuff using the thunk middleware
 dispatch((dispatcher) => {
   dispatcher({type: "API_CALL_UPDATE_START"});
 
@@ -54,7 +55,7 @@ dispatch((dispatcher) => {
 });
 ```
 
-### `new weedux(initialState, reducer)`:
+### `new weedux(initialState, [reducer], [middleware])`:
 
 Creates a new store.
 
@@ -62,17 +63,20 @@ Creates a new store.
 
 `reducer` is a function (or array of functions) that get passed a state object and the dispatched flux action. The returned value from these functions become the new state. If passed an undefined reducer, an identity function is used.
 
+`middlewares` is a function (or array of functions) that take the form of (store) => (next) => (action); pretty much the same layout as a redux middleware.
 
 
-`dispatch(action)`
+Comes with middleware in the `weedux/middleware` path, use it like so:
+```
+import { thunk, logger } from 'weedux/middleware';
 
-`action`: An object or function. If action is an object, that object will be passed to the reducer.
+const store = new Weedux({}, reducers, [thunk, logger]);
 
-If the action is a function, then that function will be passed the dispatcher, making it easy to do async actions.
-```javascript
-dispatcher((dispatch) => {
-  dispatch({ type: "INCREMENT_COUNTER" });
+const dispatch = store.dispatcher();
+dispatch((d, state) => {
+  d({ type: "MY_ACTION" });
 })
+
 ```
 
 
