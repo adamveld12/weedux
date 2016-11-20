@@ -6,9 +6,9 @@ class Weedux {
     this.state = im.Map(initialState);
     this.dispatchEm = new EventEmitter();
 
-    this.reducer = reducer || (s => s);
-    if (Array.isArray(this.reducer)) {
-      this.reducer = combine(this.reducer);
+    reducer = reducer || (s => s);
+    if (Array.isArray(reducer)) {
+      reducer = combine(reducer);
     }
 
     middlewares = middlewares || [];
@@ -16,21 +16,21 @@ class Weedux {
       middlewares = [ middlewares ];
     }
 
-    const mHandler = applyMiddleware(middlewares, this);
-    this.dispatcher = () => mHandler;
-  }
-
-  // dispatch returns a dispatch function that can be used to dispatch actions
-  dispatcher(next){
-    return (action) => {
-      const newState =  reduce(this.store(), action, this.reducer);
+    const rootDispatcher = (action) => {
+      const newState =  reduce(this.getState(), action, reducer);
       this.state = im.Map(newState);
       this.dispatchEm.emit('updated', newState, action);
-    }
+    };
+
+    const mHandler = applyMiddleware(middlewares, rootDispatcher, this);
+    this.dispatcher = () => mHandler;
   }
 
   // store returns the current state
   store(){ return this.state.toObject(); }
+
+  // store returns the current state
+  getState(){ return this.state.toObject(); }
 
   // onDispatchComplete is called when a dispatch is completed
   onDispatchComplete(cb){
@@ -61,12 +61,7 @@ function reduce(oldState, action, reducer){
   return reducer(oldState, action) || oldState;
 }
 
-function applyMiddleware(middlewares, store){
-  let dispatcher = store.dispatcher();
-
-  middlewares.reverse().forEach((m) => {
-    dispatcher = m(store)(dispatcher);
-  })
-
+function applyMiddleware(middlewares, dispatcher, store){
+  middlewares.reverse().forEach(m => dispatcher = m(store)(dispatcher));
   return dispatcher;
 }
