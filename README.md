@@ -12,8 +12,8 @@ $ npm install weedux --save
 
 Use it like this:
 ```javascript
-import weedux from 'weedux';
-import { thunk } from 'weedux/middleware';
+import weedux, { middleware } from 'weedux';
+const { thunk } = middleware;
 
 const initialState = { counter: 0 };
 
@@ -66,9 +66,10 @@ Creates a new store.
 `middlewares` is a function (or array of functions) that take the form of (store) => (next) => (action); pretty much the same layout as a redux middleware.
 
 
-Comes with middleware in the `weedux/middleware` path, use it like so:
+Comes with middleware on the `weedux.middleware`, use it like so:
 ```
-import { thunk, logger } from 'weedux/middleware';
+import Weedux, { middleware } from 'weedux';
+const { thunk, logger } = middleware;
 
 const store = new Weedux({}, reducers, [thunk, logger]);
 

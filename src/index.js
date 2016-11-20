@@ -1,6 +1,8 @@
 import im from 'immutable';
 import EventEmitter from 'events';
 
+import middleware from './middleware/index.js';
+
 class Weedux {
   constructor(initialState, reducer, middlewares){
     this.state = im.Map(initialState);
@@ -43,8 +45,6 @@ class Weedux {
   }
 }
 
-module.exports = Weedux;
-
 function combine(reducers) {
   return (initialState, action) =>
     reducers.reduce(
@@ -65,3 +65,7 @@ function applyMiddleware(middlewares, dispatcher, store){
   middlewares.reverse().forEach(m => dispatcher = m(store)(dispatcher));
   return dispatcher;
 }
+
+Weedux.middleware = middleware;
+module.exports = Weedux;
+
