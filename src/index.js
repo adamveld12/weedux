@@ -2,21 +2,22 @@ import im from 'immutable';
 import EventEmitter from 'events';
 
 class Weedux {
-  constructor(initialState, reducer, middleware){
+  constructor(initialState, reducer, middlewares){
     this.state = im.Map(initialState);
     this.dispatchEm = new EventEmitter();
 
     this.reducer = reducer || (s => s);
-    if (Array.isArray(reducer)) {
-      this.reducer = combine(reducer);
+    if (Array.isArray(this.reducer)) {
+      this.reducer = combine(this.reducer);
     }
 
-    this.middleware = middleware || [s => this.dispatcher];
-    if (!Array.isArray(middleware)){
-      this.middleware = [middleware];
+    middlewares = middlewares || [];
+    if (!Array.isArray(middlewares)){
+      middlewares = [ middlewares ];
     }
 
-    this.dispatcher = applyMiddleware(this.middleware, this);
+    const mHandler = applyMiddleware(middlewares, this);
+    this.dispatcher = () => mHandler;
   }
 
   // dispatch returns a dispatch function that can be used to dispatch actions
@@ -60,12 +61,12 @@ function reduce(oldState, action, reducer){
   return reducer(oldState, action) || oldState;
 }
 
-function applyMiddleware(middleware, store){
+function applyMiddleware(middlewares, store){
   let dispatcher = store.dispatcher();
 
-  middleware.reverse().forEach((m) => {
+  middlewares.reverse().forEach((m) => {
     dispatcher = m(store)(dispatcher);
   })
 
-  return () => dispatcher;
+  return dispatcher;
 }
