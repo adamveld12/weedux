@@ -1,7 +1,7 @@
 # Weedux
 [![Build Status](https://semaphoreci.com/api/v1/adamveld12/weedux/branches/master/badge.svg)](https://semaphoreci.com/adamveld12/weedux)
 
-A simple toy redux like thing.
+A tiny simple toy redux like thing for learning.
 
 ## How to use
 
