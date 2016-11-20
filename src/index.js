@@ -1,45 +1,30 @@
 import im from 'immutable';
 import EventEmitter from 'events';
 
-function combine(reducers) {
-  return (initialState, action) =>
-    reducers.reduce(
-      (currentState, reducerFn) => reducerFn(currentState, action),
-      initialState
-    );
-}
-
-function reduce(oldState, action, reducer){
-    if (!action || action === null) {
-      reject("A null or undefined action was erroneously passed to dispatch");
-      return;
-    }
-
-    return reducer(oldState, action) || oldState;
-}
-
 class Weedux {
-  constructor(initialState, reducer){
+  constructor(initialState, reducer, middleware){
     this.state = im.Map(initialState);
     this.dispatchEm = new EventEmitter();
 
-    this.reducer = reducer || ((s) => s);
-
+    this.reducer = reducer || (s => s);
     if (Array.isArray(reducer)) {
       this.reducer = combine(reducer);
     }
+
+    this.middleware = middleware || [s => this.dispatcher];
+    if (!Array.isArray(middleware)){
+      this.middleware = [middleware];
+    }
+
+    this.dispatcher = applyMiddleware(this.middleware, this);
   }
 
   // dispatch returns a dispatch function that can be used to dispatch actions
-  dispatcher(){
+  dispatcher(next){
     return (action) => {
-        if (typeof(action) === 'function') {
-          action(this.dispatcher());
-        } else {
-          const newState =  reduce(this.state.toObject(), action, this.reducer);
-          this.state = im.Map(newState);
-          this.dispatchEm.emit('updated', newState, action);
-        }
+      const newState =  reduce(this.store(), action, this.reducer);
+      this.state = im.Map(newState);
+      this.dispatchEm.emit('updated', newState, action);
     }
   }
 
@@ -57,4 +42,30 @@ class Weedux {
   }
 }
 
-module.exports = Weedux
+module.exports = Weedux;
+
+function combine(reducers) {
+  return (initialState, action) =>
+    reducers.reduce(
+      (currentState, reducerFn) => reducerFn(currentState, action),
+      initialState
+    );
+}
+
+function reduce(oldState, action, reducer){
+  if (!action || action === null) {
+    throw new Error("A null or undefined action was erroneously passed to dispatch");
+  }
+
+  return reducer(oldState, action) || oldState;
+}
+
+function applyMiddleware(middleware, store){
+  let dispatcher = store.dispatcher();
+
+  middleware.reverse().forEach((m) => {
+    dispatcher = m(store)(dispatcher);
+  })
+
+  return () => dispatcher;
+}

@@ -41,25 +41,3 @@ test('removeOnDispatchComplete should remove callback', () => {
 
   expect(testFn).toHaveBeenCalledTimes(1)
 });
-
-test('async dispatch 1', () => {
-  const store = new Weedux({});
-  const dispatch = store.dispatcher();
-  const testFn = jest.fn();
-
-  store.onDispatchComplete((ns) => testFn());
-
-  return new Promise((resolve) => {
-
-    dispatch((d) => {
-      setTimeout(() => {
-        d({});
-        resolve();
-      });
-
-      dispatch({});
-      expect(testFn).toHaveBeenCalledTimes(1);
-    });
-
-  }).then(() => expect(testFn).toHaveBeenCalledTimes(2));
-});
