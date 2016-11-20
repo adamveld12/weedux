@@ -1,6 +1,7 @@
 # Weedux
+[![Build Status](https://semaphoreci.com/api/v1/adamveld12/weedux/branches/master/badge.svg)](https://semaphoreci.com/adamveld12/weedux)
 
-A simple toy redux like thing.
+A tiny simple toy redux like thing for learning.
 
 ## How to use
 
@@ -12,6 +13,7 @@ $ npm install weedux --save
 Use it like this:
 ```javascript
 import weedux from 'weedux';
+import { thunk } from 'weedux/middleware';
 
 const initialState = { counter: 0 };
 
@@ -34,7 +36,7 @@ const reducers = [
   },
 ];
 
-const store = new weedux(initialState, reducers);
+const store = new weedux(initialState, reducers, [thunk]);
 
 store.onDispatchComplete((newState) => console.log("State Updated:", newState));
 
@@ -42,7 +44,7 @@ const dispatch = store.dispatcher();
 
 dispatch({type: "INCREMENT_COUNTER"});
 
-// do async stuff
+// do async stuff using the thunk middleware
 dispatch((dispatcher) => {
   dispatcher({type: "API_CALL_UPDATE_START"});
 
@@ -53,7 +55,7 @@ dispatch((dispatcher) => {
 });
 ```
 
-### `new weedux(initialState, reducer)`:
+### `new weedux(initialState, [reducer], [middleware])`:
 
 Creates a new store.
 
@@ -61,21 +63,30 @@ Creates a new store.
 
 `reducer` is a function (or array of functions) that get passed a state object and the dispatched flux action. The returned value from these functions become the new state. If passed an undefined reducer, an identity function is used.
 
+`middlewares` is a function (or array of functions) that take the form of (store) => (next) => (action); pretty much the same layout as a redux middleware.
+
+
+Comes with middleware in the `weedux/middleware` path, use it like so:
+```
+import { thunk, logger } from 'weedux/middleware';
+
+const store = new Weedux({}, reducers, [thunk, logger]);
+
+const dispatch = store.dispatcher();
+dispatch((d, state) => {
+  d({ type: "MY_ACTION" });
+})
+
+```
+
 
 ### `dispatcher()`:
 
-returns a dispatch function that can be used to dispatch actions to the store, see below for the api.
+returns a dispatch function that can be used to dispatch actions to the store. The function takes an action.
 
 `dispatch(action)`
 
-`action`: An object or function. If action is an object, that object will be passed to the reducer.
-
-If the action is a function, then that function will be passed the dispatcher, making it easy to do async actions.
-```javascript
-dispatcher((dispatch) => {
-  dispatch({ type: "INCREMENT_COUNTER" });
-})
-```
+`action`: An object that will be passed to the reducer.
 
 ### `onDispatchComplete(cb)`
 
@@ -83,7 +94,7 @@ Adds a callback to the store that is fired whenever a dispatched action fully co
 
 `cb`: is a callback that is passed the latest version of the store's state and the action that was used to update it.
 
-returns a handle that can be used to remove the callback later
+returns a handle that can be used to remove the callback later.
 
 
 ### `removeOnDispatchComplete(handle)`
@@ -96,9 +107,9 @@ Removes the callback from the store that belongs to the specified handle.
 if the handle value is not a valid handle or is a handle that belongs to a previously removed callback, this function returns without error and does nothing.
 
 
-### `store()`
+### `store()` or `getState()`
 
-returns the full state of the store
+returns a copy of the full state of the store.
 
 
 ## LICENSE
