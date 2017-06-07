@@ -45,7 +45,7 @@ const dispatch = store.dispatcher();
 dispatch({type: "INCREMENT_COUNTER"});
 
 // do async stuff using the thunk middleware
-dispatch((dispatcher) => {
+dispatch((dispatcher, store) => {
   dispatcher({type: "API_CALL_UPDATE_START"});
 
   fetch("/my/api/endpoint")
@@ -108,7 +108,7 @@ Removes the callback from the store that belongs to the specified handle.
 if the handle value is not a valid handle or is a handle that belongs to a previously removed callback, this function returns without error and does nothing.
 
 
-### `store()` or `getState()`
+### `getState()`
 
 returns a copy of the full state of the store.
 

@@ -3,6 +3,7 @@ import EventEmitter from 'events';
 
 import middleware from './middleware/index.js';
 
+
 class Weedux {
   constructor(initialState, reducer, middlewares){
     this.state = im.Map(initialState);
@@ -18,10 +19,25 @@ class Weedux {
       middlewares = [ middlewares ];
     }
 
+    let reducing = false;
+    const actionQueue = [];
     const rootDispatcher = (action) => {
-      const newState =  reduce(this.getState(), action, reducer);
-      this.state = im.Map(newState);
-      this.dispatchEm.emit('updated', newState, action);
+      actionQueue.push(action);
+
+      if (reducing)
+        return;
+
+      reducing = true;
+
+
+      while(actionQueue.length > 0){
+        const currentAction = actionQueue.shift();
+        const newState =  reduce(this.getState(), currentAction, reducer);
+        this.state = im.Map(newState);
+      }
+
+      reducing = false;
+      this.dispatchEm.emit('updated', this.getState());
     };
 
     const mHandler = applyMiddleware(middlewares, rootDispatcher, this);

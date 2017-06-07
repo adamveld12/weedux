@@ -4,7 +4,10 @@
   "description": "A toy redux like thing",
   "main": "dist/index.js",
   "jsnext:main": "src/index.js",
-  "files": [ "dist", "src" ],
+  "files": [
+    "dist",
+    "src"
+  ],
   "scripts": {
     "test": "jest -b",
     "dev": "jest --colors --watch -o",
@@ -15,7 +18,10 @@
     "type": "git",
     "url": "https://github.com/adamveld12/weedux.git"
   },
-  "keywords": [ "react", "flux" ],
+  "keywords": [
+    "react",
+    "flux"
+  ],
   "homepage": "https://github.com/adamveld12/weedux#readme",
   "author": "Adam Veldhousen",
   "license": "MIT",
@@ -23,12 +29,16 @@
     "url": "https://github.com/adamveld12/weedux/issues"
   },
   "babel": {
-    "presets": [ "es2015" ]
+    "presets": [
+      "es2015"
+    ]
   },
   "jest": {
     "verbose": true,
     "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
-    "testPathDirs": [ "./src" ]
+    "testPathDirs": [
+      "./src"
+    ]
   },
   "devDependencies": {
     "babel-cli": "^6.18.0",
