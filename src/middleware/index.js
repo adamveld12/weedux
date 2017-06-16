@@ -3,7 +3,7 @@ Allows passing a function to a dispatch call that receivees a dispatcher and the
 This allows you to execute asynchronous calls and dispatch as they are executed
 */
 const createThunk = store => n => a =>
-  (typeof(a) === "function") ? a(store.dispatcher(), store.getState()) : n(a)
+  (typeof(a) === "function") ? a(store.dispatch, store.getState()) : n(a)
 
 /*
 Logs actions before they are dispatched
@@ -26,7 +26,7 @@ const createSafeDispatcher = (store, onError) => (n) => {
 
 const createPromiseDispatcher = (store) => (n) => (a) => {
   if (typeof(a.then) === "function"){
-    return Promise.resolve(a).then(store.dispatcher());
+    return Promise.resolve(a).then(store.dispatch);
   }
 
   return n(a);

@@ -38,9 +38,9 @@ const reducers = [
 
 const store = new weedux(initialState, reducers, [thunk]);
 
-store.onDispatchComplete((newState) => console.log("State Updated:", newState));
+store.subscribe((newState) => console.log("State Updated:", newState));
 
-const dispatch = store.dispatcher();
+const dispatch = store.dispatch;
 
 dispatch({type: "INCREMENT_COUNTER"});
 
@@ -73,7 +73,7 @@ const { thunk, logger } = middleware;
 
 const store = new Weedux({}, reducers, [thunk, logger]);
 
-const dispatch = store.dispatcher();
+const dispatch = store.dispatch;
 dispatch((d, state) => {
   d({ type: "MY_ACTION" });
 })
@@ -81,34 +81,21 @@ dispatch((d, state) => {
 ```
 
 
-### `dispatcher()`:
+### `store.dispatch(action)`:
 
-returns a dispatch function that can be used to dispatch actions to the store. The function takes an action.
-
-`dispatch(action)`
+A function used to dispatch actions to the store.
 
 `action`: An object that will be passed to the reducer.
 
-### `onDispatchComplete(cb)`
+### `store.subscribe(cb)`
 
 Adds a callback to the store that is fired whenever a dispatched action fully completes.
 
 `cb`: is a callback that is passed the latest version of the store's state and the action that was used to update it.
 
-returns a handle that can be used to remove the callback later.
+returns a handle function that when invoked removes the associated callback from the internal listener
 
-
-### `removeOnDispatchComplete(handle)`
-
-Removes the callback from the store that belongs to the specified handle.
-
-
-`handle`: the handle used to remove a previously registered callback.
-
-if the handle value is not a valid handle or is a handle that belongs to a previously removed callback, this function returns without error and does nothing.
-
-
-### `getState()`
+### `store.getState()`
 
 returns a copy of the full state of the store.
 

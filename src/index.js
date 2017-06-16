@@ -3,6 +3,38 @@ import EventEmitter from 'events';
 
 import middleware from './middleware/index.js';
 
+function combineReducers(reducers) {
+  return (initialState, action) =>
+    reducers.reduce(
+      (currentState, reducerFn) => reducerFn(currentState, action),
+      initialState
+    );
+}
+
+function applyMiddleware(middlewares, store){
+  var n;
+  middlewares.reverse().forEach(m => n = m(store)(n));
+  return n;
+}
+
+function rootReducer(reducer) {
+  var reducing = false;
+
+  return store => n => action => {
+    if (!action || action === null)
+      throw new Error("A null or undefined action was erroneously passed to dispatch");
+
+    if (reducing)
+      throw new Error("Cannot dispatch an action while reducing");
+
+    reducing = true;
+    const newState = reducer(store.getState(), action);
+    store.state = im.Map(newState);
+    reducing = false;
+
+    store.dispatchEm.emit('updated', store.getState());
+  };
+}
 
 class Weedux {
   constructor(initialState, reducer, middlewares){
@@ -11,7 +43,7 @@ class Weedux {
 
     reducer = reducer || (s => s);
     if (Array.isArray(reducer)) {
-      reducer = combine(reducer);
+      reducer = combineReducers(reducer);
     }
 
     middlewares = middlewares || [];
@@ -19,69 +51,19 @@ class Weedux {
       middlewares = [ middlewares ];
     }
 
-    let reducing = false;
-    const actionQueue = [];
-    const rootDispatcher = (action) => {
-      actionQueue.push(action);
+    const mHandler = applyMiddleware(middlewares.concat(rootReducer(reducer)), this);
 
-      if (reducing)
-        return;
+    this.dispatch = mHandler;
 
-      reducing = true;
+    this.getState = () => this.state.toObject()
 
+    this.subscribe = (cb) => {
+      this.dispatchEm.on('updated', cb);
+      return () => this.dispatchEm.removeListener('updated', cb);
+    }
 
-      while(actionQueue.length > 0){
-        const currentAction = actionQueue.shift();
-        const newState =  reduce(this.getState(), currentAction, reducer);
-        this.state = im.Map(newState);
-      }
-
-      reducing = false;
-      this.dispatchEm.emit('updated', this.getState());
-    };
-
-    const mHandler = applyMiddleware(middlewares, rootDispatcher, this);
-    this.dispatcher = () => mHandler;
   }
-
-  // store returns the current state
-  store(){ return this.state.toObject(); }
-
-  // store returns the current state
-  getState(){ return this.state.toObject(); }
-
-  // onDispatchComplete is called when a dispatch is completed
-  onDispatchComplete(cb){
-    this.dispatchEm.on('updated', cb);
-    return cb;
-  }
-
-  removeOnDispatchComplete(cb){
-    this.dispatchEm.removeListener('updated', cb);
-  }
-}
-
-function combine(reducers) {
-  return (initialState, action) =>
-    reducers.reduce(
-      (currentState, reducerFn) => reducerFn(currentState, action),
-      initialState
-    );
-}
-
-function reduce(oldState, action, reducer){
-  if (!action || action === null) {
-    throw new Error("A null or undefined action was erroneously passed to dispatch");
-  }
-
-  return reducer(oldState, action) || oldState;
-}
-
-function applyMiddleware(middlewares, dispatcher, store){
-  middlewares.reverse().forEach(m => dispatcher = m(store)(dispatcher));
-  return dispatcher;
 }
 
 Weedux.middleware = middleware;
 module.exports = Weedux;
-
