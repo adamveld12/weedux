@@ -7,6 +7,20 @@ test('initial state should be set', () =>{
   expect(store.getState()).toEqual(initialState);
 });
 
+test('entire store api should be available in middleware during binding', () =>{
+  const initialState = { a: 5, name: "bob" };
+  const store = new Weedux(initialState, (s, a) => s, [
+    (
+      ({ dispatch, getState, subscribe }) => {
+      expect(dispatch).toBeDefined();
+      expect(getState).toBeDefined();
+      expect(subscribe).toBeDefined();
+      return n => a => {}
+    }
+  )
+  ]);
+});
+
 test('subscribe should be invoked', () => {
   const initialState = { a: 5, name: "bob" };
   const store = new Weedux(initialState, (s, a) => s);
