@@ -17,30 +17,9 @@ function applyMiddleware(middlewares, store){
   return n;
 }
 
-function rootReducer(reducer) {
-  var reducing = false;
-
-  return store => n => action => {
-    if (!action || action === null)
-      throw new Error("A null or undefined action was erroneously passed to dispatch");
-
-    if (reducing)
-      throw new Error("Cannot dispatch an action while reducing");
-
-    reducing = true;
-    const newState = reducer(store.getState(), action);
-    store.state = im.Map(newState);
-    reducing = false;
-
-    store.dispatchEm.emit('updated', store.getState());
-  };
-}
 
 class Weedux {
   constructor(initialState, reducer, middlewares){
-    this.state = im.Map(initialState);
-    this.dispatchEm = new EventEmitter();
-
     reducer = reducer || (s => s);
     if (Array.isArray(reducer)) {
       reducer = combineReducers(reducer);
@@ -51,17 +30,39 @@ class Weedux {
       middlewares = [ middlewares ];
     }
 
-    const mHandler = applyMiddleware(middlewares.concat(rootReducer(reducer)), this);
+    let state = im.Map(initialState);
+    let dispatchEm = new EventEmitter();
+    let rootMiddleware = null;
 
-    this.dispatch = mHandler;
+    this.dispatch = (action) => rootMiddleware(action);
 
-    this.getState = () => this.state.toObject()
+    this.getState = () => state.toObject()
 
     this.subscribe = (cb) => {
-      this.dispatchEm.on('updated', cb);
-      return () => this.dispatchEm.removeListener('updated', cb);
+      dispatchEm.on('updated', cb);
+      return () => dispatchEm.removeListener('updated', cb);
     }
 
+    function rootReducer(reducer) {
+      var reducing = false;
+
+      return store => n => action => {
+        if (!action || action === null)
+          throw new Error("A null or undefined action was erroneously passed to dispatch");
+
+        if (reducing)
+          throw new Error("Cannot dispatch an action while reducing");
+
+        reducing = true;
+        const newState = reducer(store.getState(), action);
+        state = im.Map(newState);
+        reducing = false;
+
+        dispatchEm.emit('updated', store.getState());
+      };
+    }
+
+    rootMiddleware = applyMiddleware(middlewares.concat(rootReducer(reducer)), this);
   }
 }
 
