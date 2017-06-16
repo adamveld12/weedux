@@ -1,6 +1,6 @@
 {
   "name": "weedux",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "A toy redux like thing",
   "main": "dist/index.js",
   "jsnext:main": "src/index.js",
