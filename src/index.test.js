@@ -4,36 +4,36 @@ test('initial state should be set', () =>{
   const initialState = { a: 5, name: "bob" };
   const store = new Weedux(initialState, (s, a) => s);
 
-  expect(store.store()).toEqual(initialState);
+  expect(store.getState()).toEqual(initialState);
 });
 
-test('onDispatchComplete should be invoked', () => {
+test('subscribe should be invoked', () => {
   const initialState = { a: 5, name: "bob" };
   const store = new Weedux(initialState, (s, a) => s);
-  const dispatch = store.dispatcher();
+  const dispatch = store.dispatch;
   const testFn = jest.fn();
 
-  store.onDispatchComplete((ns) => testFn());
+  store.subscribe((ns) => testFn());
   expect(testFn).toHaveBeenCalledTimes(0);
-
   dispatch({});
+
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve();
-      expect(testFn).toHaveBeenCalledTimes(1) ;
-    })
-  })
+      expect(testFn).toHaveBeenCalledTimes(1);
+    });
+  });
 });
 
-test('removeOnDispatchComplete should remove callback', () => {
+test('removesubscribe should remove callback', () => {
   const initialState = { a: 5, name: "bob" };
   const store = new Weedux(initialState, (s, a) => s);
-  const dispatch = store.dispatcher();
+  const dispatch = store.dispatch;
   const testFn = jest.fn();
 
-  const handle = store.onDispatchComplete((ns) => testFn());
+  const handle = store.subscribe((ns) => testFn());
   dispatch({});
-  store.removeOnDispatchComplete(handle);
+  handle();
 
   dispatch({});
   dispatch({});
@@ -48,4 +48,3 @@ test('Make sure import works', () => {
    expect(typeof(middleware.logger)).toEqual("function")
    expect(typeof(Weedux)).toEqual("function")
 });
-
