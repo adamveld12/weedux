@@ -2,6 +2,7 @@ import im from 'immutable';
 import EventEmitter from 'events';
 
 import middleware from './middleware/index.js';
+import connect from './connect.js';
 
 function combineReducers(reducers) {
   return (initialState, action) =>
@@ -17,54 +18,57 @@ function applyMiddleware(middlewares, store){
   return n;
 }
 
+function rootReducer(reducer, storeInternal) {
+    var reducing = false;
+    const { dispatchEm } = storeInternal;
+
+    return store => n => action => {
+        if (!action || action === null)
+            throw new Error("A null or undefined action was erroneously passed to dispatch");
+
+        if (reducing)
+            throw new Error("Cannot dispatch an action while reducing");
+
+        const { getState } = store;
+
+        reducing = true;
+        const newState = reducer(getState(), action);
+        storeInternal.setState(newState);
+        reducing = false;
+
+        dispatchEm.emit('updated', getState());
+    };
+}
+
 
 class Weedux {
-  constructor(initialState, reducer, middlewares){
-    reducer = reducer || (s => s);
-    if (Array.isArray(reducer)) {
+  constructor(initialState = {}, reducer = (s => s), middlewares = []){
+    if (Array.isArray(reducer))
       reducer = combineReducers(reducer);
-    }
 
-    middlewares = middlewares || [];
-    if (!Array.isArray(middlewares)){
+    if (!Array.isArray(middlewares))
       middlewares = [ middlewares ];
-    }
 
     let state = im.Map(initialState);
-    let dispatchEm = new EventEmitter();
     let rootMiddleware = null;
+    const dispatchEm = new EventEmitter();
 
     this.dispatch = (action) => rootMiddleware(action);
-
-    this.getState = () => state.toObject()
+    this.getState = () => state.toObject();
 
     this.subscribe = (cb) => {
       dispatchEm.on('updated', cb);
       return () => dispatchEm.removeListener('updated', cb);
-    }
+    };
 
-    function rootReducer(reducer) {
-      var reducing = false;
+    rootMiddleware = applyMiddleware(middlewares.concat(rootReducer(reducer, {
+        setState: (ns) => state = im.Map(ns),
+        dispatchEm
+    })), this);
 
-      return store => n => action => {
-        if (!action || action === null)
-          throw new Error("A null or undefined action was erroneously passed to dispatch");
-
-        if (reducing)
-          throw new Error("Cannot dispatch an action while reducing");
-
-        reducing = true;
-        const newState = reducer(store.getState(), action);
-        state = im.Map(newState);
-        reducing = false;
-
-        dispatchEm.emit('updated', store.getState());
-      };
-    }
-
-    rootMiddleware = applyMiddleware(middlewares.concat(rootReducer(reducer)), this);
   }
 }
 
+Weedux.connect = connect;
 Weedux.middleware = middleware;
 module.exports = Weedux;
