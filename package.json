@@ -1,6 +1,6 @@
 {
   "name": "weedux",
-  "version": "3.0.1",
+  "version": "3.1.0",
   "description": "A toy redux like thing",
   "main": "dist/index.js",
   "jsnext:main": "src/index.js",
@@ -30,7 +30,9 @@
   },
   "babel": {
     "presets": [
-      "es2015"
+      "es2015",
+      "react",
+      "stage-0"
     ]
   },
   "jest": {
@@ -47,6 +49,10 @@
     "jest": "^16.0.2"
   },
   "dependencies": {
-    "immutable": "^3.8.1"
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "immutable": "^3.8.1",
+    "prop-types": "^15.5.10",
+    "react": "^15.6.1"
   }
 }
