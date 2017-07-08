@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const empty = () => ({});
-export const connect = (mapStateToProps = empty, mapDispatchToProps = empty, store = {}) => {
+export default (mapStateToProps = empty, mapDispatchToProps = empty, store = {}) => {
     return (WrappedComponent) => {
         return class extends React.Component{
             static defaultProps = {
@@ -25,8 +25,8 @@ export const connect = (mapStateToProps = empty, mapDispatchToProps = empty, sto
                 return (
                     <WrappedComponent
                         {...this.props}
-                        {...ms2p(getState(), this.props)}
-                        {...md2p(dispatch, this.props)}
+                        {...ms2p}
+                        {...md2p}
                     />
                 );
             }

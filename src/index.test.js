@@ -1,4 +1,4 @@
-import Weedux, { middleware } from './index.js';
+import Weedux, { middleware, connect } from './index.js';
 
 test('initial state should be set', () =>{
   const initialState = { a: 5, name: "bob" };
@@ -58,5 +58,6 @@ test('removesubscribe should remove callback', () => {
 test('Make sure import works', () => {
    expect(typeof(middleware.thunk)).toEqual("function")
    expect(typeof(middleware.logger)).toEqual("function")
+   expect(typeof(connect)).toEqual("function")
    expect(typeof(Weedux)).toEqual("function")
 });
