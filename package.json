@@ -1,18 +1,13 @@
 {
   "name": "weedux",
-  "version": "3.1.5",
+  "version": "3.1.6",
   "description": "A toy redux like thing",
-  "main": "dist/index.js",
+  "entry": "src/index.js",
+  "main": "src/index.js",
   "jsnext:main": "src/index.js",
-  "files": [
-    "dist",
-    "src"
-  ],
   "scripts": {
     "test": "jest -b",
-    "dev": "jest --colors --watch -o --runInBand ",
-    "build": "babel src --out-dir dist",
-    "prepublish": "npm run build"
+    "dev": "jest --colors --watch -o --runInBand "
   },
   "repository": {
     "type": "git",
@@ -28,16 +23,11 @@
   "bugs": {
     "url": "https://github.com/adamveld12/weedux/issues"
   },
-  "babel": {
-    "presets": [
-      "env",
-      "react",
-      "stage-0"
-    ]
-  },
   "jest": {
-    "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
-    "testPathDirs": [
+    "transform": {
+      ".*": "<rootDir>/node_modules/babel-jest"
+    },
+    "roots": [
       "./src"
     ]
   },
@@ -45,15 +35,17 @@
     "babel-cli": "^6.18.0",
     "babel-jest": "^16.0.0",
     "babel-polyfill": "^6.16.0",
+    "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
-    "babel-preset-env": "^1.7.0",
-    "jest": "^16.0.2"
+    "jest": "^23.1.0"
+  },
+  "peerDependencies": {
+    "react": "15 || 16",
+    "events": "3.x",
+    "prop-types": ">= 15.5.10"
   },
   "dependencies": {
-    "events": "^3.0.0",
-    "immutable": "^3.8.1",
-    "prop-types": "^15.5.10",
-    "react": "^15.6.1"
+    "immutable": "^3.8.1"
   }
 }
