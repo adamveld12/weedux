@@ -23,22 +23,15 @@
   "bugs": {
     "url": "https://github.com/adamveld12/weedux/issues"
   },
-  "jest": {
-    "transform": {
-      ".*": "<rootDir>/node_modules/babel-jest"
-    },
-    "roots": [
-      "./src"
-    ]
-  },
   "devDependencies": {
-    "babel-cli": "^6.18.0",
-    "babel-jest": "^16.0.0",
-    "babel-polyfill": "^6.16.0",
+    "babel-core": "^7.0.0-bridge.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
-    "jest": "^23.1.0"
+    "events": "3.x",
+    "jest": "^23.1.0",
+    "prop-types": ">= 15.5.10",
+    "react": "15 || 16"
   },
   "peerDependencies": {
     "react": "15 || 16",
