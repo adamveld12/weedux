@@ -61,10 +61,13 @@ class Weedux {
       return () => dispatchEm.removeListener('updated', cb);
     };
 
-    rootMiddleware = applyMiddleware(middlewares.concat(rootReducer(reducer, {
+    rootMiddleware = applyMiddleware([
+      ...middlewares,
+      rootReducer(reducer, {
         setState: (ns) => state = im.Map(ns),
         dispatchEm
-    })), this);
+      })
+    ], this);
 
   }
 }

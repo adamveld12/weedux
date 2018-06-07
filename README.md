@@ -50,7 +50,7 @@ dispatch((dispatcher, store) => {
 
   fetch("/my/api/endpoint")
     .then((res) => res.json())
-    .then((data) => dispatcher({ type: "API_CALL_UPDATE_SUCCESS", payload: data }));
+    .then((data) => dispatcher({ type: "API_CALL_UPDATE_SUCCESS", payload: data }))
     .catch(() => dispatcher({type: "API_CALL_UPDATE_FAIL"}));
 });
 ```
@@ -81,13 +81,13 @@ dispatch((d, state) => {
 ```
 
 
-### `store.dispatch(action)`:
+### `store.dispatch(action) => Promise`:
 
-A function used to dispatch actions to the store.
+A function used to dispatch actions to the store. Returns a promise that resolves when the dispatch is completed.
 
 `action`: An object that will be passed to the reducer.
 
-### `store.subscribe(cb)`
+### `store.subscribe(cb) => subscribeHandle`
 
 Adds a callback to the store that is fired whenever a dispatched action fully completes.
 
@@ -95,10 +95,15 @@ Adds a callback to the store that is fired whenever a dispatched action fully co
 
 returns a handle function that when invoked removes the associated callback from the internal listener
 
-### `store.getState()`
+### `store.getState() => [Object]`
+
 
 returns a copy of the full state of the store.
 
+
+### `connect(mapStateToProps, mapDispatchToProps, store) => func(React.Component)`
+
+A handy connector that returns a function that injects props/state into the specified React.Component and manages lifecycle events for you.
 
 ## LICENSE
 
