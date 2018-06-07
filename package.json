@@ -1,6 +1,6 @@
 {
   "name": "weedux",
-  "version": "3.1.3",
+  "version": "3.1.4",
   "description": "A toy redux like thing",
   "main": "dist/index.js",
   "jsnext:main": "src/index.js",
@@ -30,7 +30,7 @@
   },
   "babel": {
     "presets": [
-      "es2015",
+      "env",
       "react",
       "stage-0"
     ]
@@ -45,7 +45,7 @@
     "babel-cli": "^6.18.0",
     "babel-jest": "^16.0.0",
     "babel-polyfill": "^6.16.0",
-    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-env": "^1.7.0",
     "jest": "^16.0.2"
   },
   "dependencies": {

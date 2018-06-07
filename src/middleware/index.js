@@ -17,13 +17,16 @@ const createLogger = (store) => n => a => {
 Allows you to handle errors globally that are thrown while reducing and action
 */
 const createSafeDispatcher = (store, onError) => (n) => {
-  try{
+  try {
     n(a);
   } catch(e){
     onError ? onError(e) :  console.error(e);
   }
 }
 
+/*
+Allows dispatching thenable/Promise objects that resolve actions.
+ */
 const createPromiseDispatcher = (store) => (n) => (a) => {
   if (typeof(a.then) === "function"){
     return Promise.resolve(a).then(store.dispatch);
