@@ -1,6 +1,6 @@
 {
   "name": "weedux",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "description": "A toy redux like thing",
   "entry": "index.js",
   "main": "index.js",
@@ -10,6 +10,7 @@
     "index.js"
   ],
   "scripts": {
+    "prepublish": "npm run build",
     "test": "jest -b -c '{ \"testURL\": \"http://localhost\" }'",
     "build": "babel src -d lib",
     "dev": "jest --colors --watch -o --runInBand "
@@ -33,7 +34,7 @@
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
-    "jest": "^23.1.0",
+    "jest": "^23.1.0"
   },
   "peerDependencies": {
     "react": "15 || 16"
