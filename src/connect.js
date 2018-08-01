@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 const empty = () => ({});
 export default (mapStateToProps = empty, mapDispatchToProps = empty, store = {}) => {
     return (WrappedComponent) => {
-        return class extends React.Component{
+        return class extends Component{
             static defaultProps = {
                 store: store
-            }
+            };
 
             static propTypes = {
                 store: PropTypes.shape({
@@ -15,7 +15,7 @@ export default (mapStateToProps = empty, mapDispatchToProps = empty, store = {})
                     dispatch: PropTypes.func.isRequired,
                     subscribe: PropTypes.func.isRequired,
                 }).isRequired
-            }
+            };
 
             render(){
                 const { store: { getState, dispatch } } = this.props;

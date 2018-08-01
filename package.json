@@ -2,11 +2,15 @@
   "name": "weedux",
   "version": "3.1.6",
   "description": "A toy redux like thing",
-  "entry": "src/index.js",
-  "main": "src/index.js",
-  "jsnext:main": "src/index.js",
+  "entry": "index.js",
+  "main": "index.js",
+  "files": [
+    "src",
+    "lib"
+  ],
   "scripts": {
     "test": "jest -b",
+    "build": "babel src -d lib",
     "dev": "jest --colors --watch -o --runInBand "
   },
   "repository": {
@@ -24,10 +28,10 @@
     "url": "https://github.com/adamveld12/weedux/issues"
   },
   "devDependencies": {
-    "babel-core": "^7.0.0-bridge.0",
+    "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
-    "babel-preset-stage-0": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
     "events": "3.x",
     "jest": "^23.1.0",
     "prop-types": ">= 15.5.10",
