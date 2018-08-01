@@ -33,10 +33,7 @@
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
-    "events": "3.x",
     "jest": "^23.1.0",
-    "prop-types": ">= 15.5.10",
-    "react": "15 || 16"
   },
   "peerDependencies": {
     "react": "15 || 16"
