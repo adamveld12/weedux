@@ -6,10 +6,11 @@
   "main": "index.js",
   "files": [
     "src",
-    "lib"
+    "lib",
+    "index.js"
   ],
   "scripts": {
-    "test": "jest -b",
+    "test": "jest -b -c '{ \"testURL\": \"http://localhost\" }'",
     "build": "babel src -d lib",
     "dev": "jest --colors --watch -o --runInBand "
   },
@@ -38,11 +39,11 @@
     "react": "15 || 16"
   },
   "peerDependencies": {
-    "react": "15 || 16",
-    "events": "3.x",
-    "prop-types": ">= 15.5.10"
+    "react": "15 || 16"
   },
   "dependencies": {
-    "immutable": "^3.8.1"
+    "immutable": "^3.8.1",
+    "events": "3.x",
+    "prop-types": ">= 15.5.10"
   }
 }
