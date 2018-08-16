@@ -2,15 +2,21 @@
 Allows passing a function to a dispatch call that receivees a dispatcher and the current state as arguments.
 This allows you to execute asynchronous calls and dispatch as they are executed
 */
-const createThunk = store => n => a =>
-  (typeof(a) === "function") ? a(store.dispatch, store.getState()) : n(a)
+const createThunk = ({dispatch, getState}) => n => a =>
+  (typeof(a) === "function") ? a(dispatch, getState()) : n(a)
 
 /*
 Logs actions before they are dispatched
 */
-const createLogger = (store) => n => a => {
-  console.log("Dispatching ", a);
+const createLogger = ({ getState })  => n => a => {
+  const previous = getState();
   n(a);
+  const newState = getState();
+  console.groupCollapsed(`ACTION: ${a.type}`);
+  console.log('Action:', a);
+  console.log('Previous:', previous);
+  console.log('Current:', newState);
+  console.groupEnd();
 }
 
 /*
@@ -27,9 +33,9 @@ const createSafeDispatcher = (store, onError) => (n) => {
 /*
 Allows dispatching thenable/Promise objects that resolve actions.
  */
-const createPromiseDispatcher = (store) => (n) => (a) => {
+const createPromiseDispatcher = ({ dispatch }) => n => a => {
   if (typeof(a.then) === "function"){
-    return Promise.resolve(a).then(store.dispatch);
+    return Promise.resolve(a).then(dispatch);
   }
 
   return n(a);

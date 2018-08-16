@@ -31,12 +31,16 @@ function rootReducer(reducer, storeInternal) {
 
         const { getState } = store;
 
-        reducing = true;
-        const newState = reducer(getState(), action);
-        storeInternal.setState(newState);
-        reducing = false;
-
-        dispatchEm.emit('updated', getState());
+        try {
+          reducing = true;
+          const newState = reducer(getState(), action);
+          storeInternal.setState(newState);
+        } catch(error) {
+          console.error('An error occured when reducing:', error);
+        } finally {
+          reducing = false;
+          dispatchEm.emit('updated', getState());
+        }
     };
 }
 
