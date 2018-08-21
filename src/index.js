@@ -44,9 +44,26 @@ function rootReducer(reducer, storeInternal) {
     };
 }
 
+function reduceObject(reducers = {}) {
+  return (initialState, action) => {
+    return Object.keys(reducers).reduce((acc, key) => {
+      const r = reducers[key];
+      if (r) {
+        const state = acc[key];
+        const newState = r(state, action);
+
+        return { ...acc, [key]: newState };
+      }
+    }, initialState);
+  };
+}
+
 
 class Weedux {
   constructor(initialState = {}, reducer = (s => s), middlewares = []){
+    if (typeof(reducer) === 'object') {
+      reducer = reduceObject(reducers)
+    }
     if (Array.isArray(reducer))
       reducer = combineReducers(reducer);
 
@@ -76,6 +93,16 @@ class Weedux {
   }
 }
 
+function bindActionCreators(actionCreators, dispatch) {
+    const boundActions = Object.keys(actionCreators).reduce((acc, key) => {
+        acc[key] = (...args) => dispatch(actionCreators[key](...args));
+        return acc;
+    }, {});
+
+    return boundActions;
+};
+
+Weedux.bindActionCreators = bindActionCreators;
 Weedux.connect = connect;
 Weedux.middleware = middleware;
 module.exports = Weedux;

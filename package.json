@@ -13,7 +13,7 @@
     "prepublish": "npm run build",
     "test": "jest -b -c '{ \"testURL\": \"http://localhost\" }'",
     "build": "babel src -d lib",
-    "dev": "jest --colors --watch -o --runInBand "
+    "dev": "jest --colors --watch -o --runInBand -c '{\"testURL\": \"http://localhost\" }' "
   },
   "repository": {
     "type": "git",

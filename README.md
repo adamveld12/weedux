@@ -105,6 +105,24 @@ returns a copy of the full state of the store.
 
 A handy connector that returns a function that injects props/state into the specified React.Component and manages lifecycle events for you.
 
+
+### `bindActionCreators({ object }, dispatch) => { object}`
+
+Takes an object where each property is a function and returns a new object where each function is wrapped in a dispatch call, passing any arguments that function recieves to the original wrapped function. This is useful for converting many flux actions into a dispatchable wrapped version that is easier to use in your code.
+
+eg.
+
+```javascript
+import { bindActionCreators } from 'weedux'
+
+const action = name => ({ type: 'HELLO_ACTION', payload: { name } })
+
+const wrappedAction = bindActionCreators({ action }, dispatch);
+
+// will dispatch the above action
+wrappedAction.action('bob');
+
+```
 ## LICENSE
 
 MIT
