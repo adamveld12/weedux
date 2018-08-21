@@ -36,6 +36,33 @@ const reducers = [
   },
 ];
 
+/*
+
+or you can do this:
+
+const initialState = { ticker: { counter: 0 } };
+
+const reducers = {
+    ticker: (state, action) => {
+        switch(action.type) {
+            case 'INCREMENT_COUNTER':
+            return {
+                ...state,
+                counter: state.counter + 1,
+            };
+            case 'DECREMENT_COUNTER':
+            return {
+                ...state,
+                counter: state.counter - 1,
+            };
+            default: 
+              return state;
+        }
+
+    }
+};
+*/
+
 const store = new weedux(initialState, reducers, [thunk]);
 
 store.subscribe((newState) => console.log("State Updated:", newState));
