@@ -62,7 +62,7 @@ function reduceObject(reducers = {}) {
 class Weedux {
   constructor(initialState = {}, reducer = (s => s), middlewares = []){
     if (typeof(reducer) === 'object') {
-      reducer = reduceObject(reducers)
+      reducer = reduceObject(reducer)
     }
     if (Array.isArray(reducer))
       reducer = combineReducers(reducer);

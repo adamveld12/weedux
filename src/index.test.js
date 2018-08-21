@@ -37,6 +37,26 @@ test('subscribe should be invoked', () => {
   });
 });
 
+test('should correctly combine object reducers into one', () => {
+  const initialState = { numbers: { a: 5 }, name: { first: "bob" } };
+  const store = new Weedux(initialState, {
+    name: (s, a) => a.type === 'name' ? ({ first: a.payload }) : s,
+    numbers: (s, a) => a.type === 'numbers' ? ({ a: a.payload }) : s,
+  });
+
+  const { dispatch, getState } = store;
+  const testFn = jest.fn();
+
+  store.subscribe((ns) => testFn());
+  expect(testFn).toHaveBeenCalledTimes(0);
+  dispatch({ type: 'name', payload: 'steve' });
+  expect(getState()).toEqual({ numbers: { a: 5 }, name: { first: 'steve' } });
+
+  dispatch({ type: 'numbers', payload: 1 });
+  expect(getState()).toEqual({ numbers: { a: 1 }, name: { first: 'steve' } });
+
+});
+
 test('removesubscribe should remove callback', () => {
   const initialState = { a: 5, name: "bob" };
   const store = new Weedux(initialState, (s, a) => s);
