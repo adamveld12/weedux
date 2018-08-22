@@ -1,4 +1,26 @@
-import Weedux, { middleware, connect, bindActionCreators } from './index.js';
+import Weedux, { middleware, connect, bindActionCreators, select } from './index.js';
+
+test('reselect selects correct property', () => {
+  const initialState = {
+    person: {
+      name: 'bob',
+    },
+    animal: {
+      dog: {
+        name: 'watson',
+        age: 3,
+      },
+    },
+  };
+
+    const personSelector = s => s.person;
+    const nameSelector = select(personSelector, s => s.name);
+    expect(nameSelector(initialState)).toEqual('bob');
+
+    const animalSelector = s => s.animal;
+    const ageSelector = select(animalSelector, s => s.dog);
+    expect(ageSelector(initialState).age).toEqual(3);
+});
 
 test('initial state should be set', () =>{
   const initialState = { a: 5, name: "bob" };

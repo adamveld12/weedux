@@ -119,6 +119,9 @@ function bindActionCreators(actionCreators, dispatch) {
     return boundActions;
 };
 
+const createSelector = (selectorFunc, mapper) => (state) => mapper(selectorFunc(state));
+
+Weedux.select = createSelector;
 Weedux.bindActionCreators = bindActionCreators;
 Weedux.connect = connect;
 Weedux.middleware = middleware;
