@@ -1,6 +1,6 @@
 {
   "name": "weedux",
-  "version": "3.5.0-beta",
+  "version": "3.5.3-beta",
   "description": "A toy redux like thing",
   "entry": "index.js",
   "main": "index.js",
