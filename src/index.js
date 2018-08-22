@@ -48,11 +48,28 @@ function reduceObject(reducers = {}) {
   return (initialState, action) => {
     return Object.keys(reducers).reduce((acc, key) => {
       const r = reducers[key];
-      if (r) {
-        const state = acc[key];
-        const newState = r(state, action);
+      const state = acc[key];
 
-        return { ...acc, [key]: newState };
+      if (!r) {
+        return acc;
+      }
+
+      if (typeof(r) === 'function') {
+        return { ...acc, [key]: r(state, action) };
+      } else if (typeof(r) === 'object') {
+        const actionReducer = r[action.type];
+
+        if (!actionReducer) {
+          return acc;
+        }
+
+        if (typeof(actionReducer) !== 'function') {
+          throw new Error(`${key}.${action.type} is not a function that can reduce the action`);
+        }
+
+        return { ...acc, [key]: actionReducer(state, action) };
+      } else {
+        throw new Error(`expected a reducer function at ${key}`);
       }
     }, initialState);
   };

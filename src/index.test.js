@@ -37,6 +37,30 @@ test('subscribe should be invoked', () => {
   });
 });
 
+test('should correctly call an action with a matching type in an object reducer', () => {
+  const initialState = { numbers: { a: 5 }, name: { first: "bob" } };
+  const store = new Weedux(initialState, {
+    name: {
+      changeFirstName: (s, a) => ({ first: a.payload }),
+    },
+    numbers: {
+      changeA: (s, a) => ({ a: a.payload }),
+    },
+  });
+
+  const { dispatch, getState } = store;
+  const testFn = jest.fn();
+
+  store.subscribe((ns) => testFn());
+  expect(testFn).toHaveBeenCalledTimes(0);
+  dispatch({ type: 'changeFirstName', payload: 'steve' });
+  expect(getState()).toEqual({ numbers: { a: 5 }, name: { first: 'steve' } });
+
+  dispatch({ type: 'changeA', payload: 1 });
+  expect(getState()).toEqual({ numbers: { a: 1 }, name: { first: 'steve' } });
+
+});
+
 test('should correctly combine object reducers into one', () => {
   const initialState = { numbers: { a: 5 }, name: { first: "bob" } };
   const store = new Weedux(initialState, {
